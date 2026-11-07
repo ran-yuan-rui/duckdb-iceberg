@@ -44,6 +44,8 @@ public:
 	const IcebergTableFilters &Filters() const;
 
 	const IcebergTableMetadata &GetMetadata() const;
+	//! Metadata file the scan was bound from; empty when the table came from a catalog
+	const string &GetMetadataFilePath() const;
 	const IcebergTableSchema &GetSchema() const;
 	ClientContext &GetContext() const;
 	const string &GetPath() const;

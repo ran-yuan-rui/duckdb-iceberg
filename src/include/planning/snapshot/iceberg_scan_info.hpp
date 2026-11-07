@@ -22,18 +22,23 @@ struct IcebergScanTemporaryData {
 
 struct IcebergScanInfo : public TableFunctionInfo {
 public:
-	IcebergScanInfo(const string &metadata_path, const IcebergTableMetadata &metadata,
+	IcebergScanInfo(const string &metadata_path, string metadata_file_path, const IcebergTableMetadata &metadata,
 	                IcebergSnapshotScanInfo snapshot_info, const IcebergTableSchema &schema)
-	    : metadata_path(metadata_path), metadata(metadata), snapshot_info(snapshot_info), schema(schema) {
+	    : metadata_path(metadata_path), metadata_file_path(std::move(metadata_file_path)), metadata(metadata),
+	      snapshot_info(snapshot_info), schema(schema) {
 	}
-	IcebergScanInfo(const string &metadata_path, unique_ptr<IcebergScanTemporaryData> owned_temp_data_p,
-	                IcebergSnapshotScanInfo snapshot_info, const IcebergTableSchema &schema)
-	    : metadata_path(metadata_path), owned_temp_data(std::move(owned_temp_data_p)),
-	      metadata(owned_temp_data->metadata), snapshot_info(snapshot_info), schema(schema) {
+	IcebergScanInfo(const string &metadata_path, string metadata_file_path,
+	                unique_ptr<IcebergScanTemporaryData> owned_temp_data_p, IcebergSnapshotScanInfo snapshot_info,
+	                const IcebergTableSchema &schema)
+	    : metadata_path(metadata_path), metadata_file_path(std::move(metadata_file_path)),
+	      owned_temp_data(std::move(owned_temp_data_p)), metadata(owned_temp_data->metadata),
+	      snapshot_info(snapshot_info), schema(schema) {
 	}
 
 public:
 	string metadata_path;
+	//! The metadata file this scan was bound from; empty when the table was resolved through a catalog
+	string metadata_file_path;
 	unique_ptr<IcebergScanTemporaryData> owned_temp_data;
 	const IcebergTableMetadata &metadata;
 	optional_ptr<IcebergTransactionData> transaction_data;

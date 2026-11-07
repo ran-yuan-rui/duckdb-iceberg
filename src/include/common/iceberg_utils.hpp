@@ -19,11 +19,14 @@
 namespace duckdb {
 
 struct IcebergResolvedMetadata {
-	IcebergResolvedMetadata(string table_location_p, IcebergTableMetadata metadata_p)
-	    : table_location(std::move(table_location_p)), metadata(std::move(metadata_p)) {
+	IcebergResolvedMetadata(string table_location_p, string metadata_file_path_p, IcebergTableMetadata metadata_p)
+	    : table_location(std::move(table_location_p)), metadata_file_path(std::move(metadata_file_path_p)),
+	      metadata(std::move(metadata_p)) {
 	}
 
 	string table_location;
+	//! The metadata file that was actually parsed for this resolution (empty when resolved through a catalog)
+	string metadata_file_path;
 	IcebergTableMetadata metadata;
 };
 

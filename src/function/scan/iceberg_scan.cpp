@@ -86,6 +86,10 @@ BindInfo IcebergBindInfo(TableFunctionGetBindInfoInput &input) {
 		result.InsertOption("table_uuid", Value(table_uuid));
 	}
 	result.InsertOption("schema_id", Value::INTEGER(snapshot_info.schema_id));
+	auto &metadata_file_path = planner.GetMetadataFilePath();
+	if (!metadata_file_path.empty()) {
+		result.InsertOption("metadata_file_path", Value(metadata_file_path));
+	}
 	// Omitted for empty tables, and when uncommitted transaction-local changes are also scanned
 	if (snapshot_info.snapshot && !planner.HasTransactionData()) {
 		result.InsertOption("snapshot_id", Value::BIGINT(snapshot_info.snapshot->snapshot_id));

@@ -51,6 +51,10 @@ const IcebergTableMetadata &IcebergScanPlanner::GetMetadata() const {
 	return shared_state->Configuration().scan_info->metadata;
 }
 
+const string &IcebergScanPlanner::GetMetadataFilePath() const {
+	return shared_state->Configuration().scan_info->metadata_file_path;
+}
+
 const IcebergTableSchema &IcebergScanPlanner::GetSchema() const {
 	return shared_state->Configuration().scan_info->schema;
 }

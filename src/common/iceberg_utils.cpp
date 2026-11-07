@@ -250,7 +250,7 @@ IcebergResolvedMetadata IcebergUtils::ResolveTableMetadata(ClientContext &contex
 			auto &iceberg_table = catalog_entry->Cast<IcebergTableSchemaVersion>();
 			iceberg_table.PrepareIcebergScanFromEntry(context);
 			auto &metadata = iceberg_table.table_info.table_metadata;
-			return IcebergResolvedMetadata(metadata.GetLocation(), metadata.Copy());
+			return IcebergResolvedMetadata(metadata.GetLocation(), string(), metadata.Copy());
 		}
 	}
 
@@ -259,7 +259,8 @@ IcebergResolvedMetadata IcebergUtils::ResolveTableMetadata(ClientContext &contex
 	auto caching_fs = make_shared_ptr<CachingFileSystemWrapper>(fs, *context.db);
 	auto metadata_path = IcebergTableMetadata::GetMetaDataPath(context, table_location, fs, options);
 	auto table_metadata = IcebergTableMetadata::Parse(metadata_path, *caching_fs, options.metadata_compression_codec);
-	return IcebergResolvedMetadata(std::move(table_location), IcebergTableMetadata::FromTableMetadata(table_metadata));
+	return IcebergResolvedMetadata(std::move(table_location), std::move(metadata_path),
+	                               IcebergTableMetadata::FromTableMetadata(table_metadata));
 }
 
 // Function to decompress a gz file content string

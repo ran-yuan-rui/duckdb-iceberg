@@ -121,7 +121,7 @@ static unique_ptr<FunctionData> IcebergScanPlanBind(ClientContext &context, Tabl
 		auto snapshot = metadata.GetSnapshot(*options.snapshot_lookup);
 		auto &schema = metadata.GetSchemaFromId(snapshot.schema_id);
 		auto &fs = FileSystem::GetFileSystem(context);
-		scan_info = make_shared_ptr<IcebergScanInfo>(metadata.GetMetadataPath(fs), metadata, snapshot, schema);
+		scan_info = make_shared_ptr<IcebergScanInfo>(metadata.GetMetadataPath(fs), string(), metadata, snapshot, schema);
 		if (options.snapshot_lookup->IsLatest() && table_entry->table_info.transaction_data) {
 			scan_info->transaction_data = table_entry->table_info.transaction_data.get();
 		}
@@ -131,7 +131,8 @@ static unique_ptr<FunctionData> IcebergScanPlanBind(ClientContext &context, Tabl
 		auto &metadata = temp_data->metadata;
 		auto snapshot = metadata.GetSnapshot(*options.snapshot_lookup);
 		auto &schema = metadata.GetSchemaFromId(snapshot.schema_id);
-		scan_info = make_shared_ptr<IcebergScanInfo>(resolved.table_location, std::move(temp_data), snapshot, schema);
+		scan_info = make_shared_ptr<IcebergScanInfo>(resolved.table_location, resolved.metadata_file_path,
+		                                             std::move(temp_data), snapshot, schema);
 	}
 	auto &metadata = scan_info->metadata;
 	auto &schema = scan_info->schema;
